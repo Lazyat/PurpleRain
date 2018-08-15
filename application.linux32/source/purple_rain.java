@@ -3,6 +3,9 @@ import processing.data.*;
 import processing.event.*; 
 import processing.opengl.*; 
 
+import ddf.minim.*; 
+import ddf.minim.ugens.*; 
+
 import java.util.HashMap; 
 import java.util.ArrayList; 
 import java.io.File; 
@@ -14,25 +17,28 @@ import java.io.IOException;
 
 public class purple_rain extends PApplet {
 
+
+
+
 // Purple Rain
 
 Drop[] drops = new Drop[500];
 
-public void setup(){
+public void setup() {
   
-  for(int i = 0; i < drops.length; i++){
-       drops[i] = new Drop();
+  for (int i = 0; i < drops.length; i++) {
+    drops[i] = new Drop();
   }
 }
 
-public void draw(){
+public void draw() {
   background(230, 230, 250);
-  for(Drop d : drops){
-    d.fall();
+  for (Drop d : drops) {
+    d.fall(this);
     d.show();
   }
 }
-class Drop{
+class Drop {
   float x = random(width);
   float y = random(-500);
   float z = random(20);
@@ -40,33 +46,39 @@ class Drop{
   float speed = map(z, 0, 20, 1, 20);
   float len = map(z, 0, 20, 10, 20);
   float thick = map(z, 0, 20, 1, 3);
-  
+
   Splash[] splashes = new Splash[20];
-  
-  public void fall(){
+
+  public void fall(PApplet p) {
+
     y+= speed;
     speed+= g;
-    
-    if(y > height){
-      for(Splash s : splashes){
+
+    if (y > height) {
+      //Sound playing at splash [WARNING LOUD]
+      //Minim m = new Minim(p);
+      //AudioOutput out = m.getLineOut();
+      //out.playNote(0, 0.2, 100);
+
+      for (Splash s : splashes) {
         s = new Splash();
-        s.explode(x);
+        s.explode(x, p);
       }
-       y = random(-500); 
-       speed = map(z, 0, 20, 4, 10);
+      y = random(-500); 
+      speed = map(z, 0, 20, 4, 10);
     }
   }
-  public void show(){
+  public void show() {
     strokeWeight(thick);
     stroke(138, 43, 226);
     line(x, y, x, y+10);
-  }  
+  }
 }
 
-class Splash{
-  public void explode(float x){
+class Splash {
+  public void explode(float x, PApplet p) {
     strokeWeight(0.5f);
-     line(x+random(-5, 5), height, x+random(-10, 10), height-random(10)); 
+    line(x+random(-5, 5), height, x+random(-10, 10), height-random(10));
   }
 }
   public void settings() {  size(640, 360); }
